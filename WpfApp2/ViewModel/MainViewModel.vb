@@ -102,6 +102,11 @@ Namespace WpfApp2.ViewModels
 
 
             End If
+            If String.IsNullOrEmpty(item.Name) Then
+                MessageBox.Show("Name cannot be empty.", "Invalid Input", MessageBoxButton.OK, MessageBoxImage.Warning)
+                Dim name = If(cache.FirstOrDefault(Function(i) i.Id = item.Id)?.Name, "Unknown")
+                item.Name = name
+            End If
 
             Dim recalculated = _jsonFileHandle.Reclculate(Items.ToList())
             Items.Clear()

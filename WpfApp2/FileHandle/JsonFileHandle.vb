@@ -35,8 +35,8 @@ Namespace WpfApp2.FileHandle
             Try
                 Dim items = JsonSerializer.Deserialize(Of List(Of ItemWithMeter))(json.ToString())
 
-                If items Is Nothing OrElse items.Any(Function(item) item.LengthMm < 0) OrElse items.Any(Function(item) String.IsNullOrEmpty(item.Name)) Then
-                    Dim wrongId = If(items?.FirstOrDefault(Function(item) item.LengthMm < 0 OrElse String.IsNullOrEmpty(item.Name))?.Id, -1)
+                If items Is Nothing OrElse items.Any(Function(item) item.LengthMm <= 0) OrElse items.Any(Function(item) String.IsNullOrEmpty(item.Name)) Then
+                    Dim wrongId = If(items?.FirstOrDefault(Function(item) item.LengthMm <= 0 OrElse String.IsNullOrEmpty(item.Name))?.Id, -1)
                     _messageBoxService.Show($"Invalid data in JSON file:id: {wrongId} LengthMm must be non-negative and Name must not be empty.",
                         "Error", MessageBoxButton.OK)
                     Return Array.Empty(Of ItemDto)()
