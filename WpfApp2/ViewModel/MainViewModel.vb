@@ -15,6 +15,7 @@ Namespace WpfApp2.ViewModels
 
         Private ReadOnly _settings As AppSettings
         Private ReadOnly _jsonFileHandle As JsonFileHandle
+        Private ReadOnly cache As List(Of ItemWithMeter) = New List(Of ItemWithMeter)()
 
         Private _items As ObservableCollection(Of ItemDto)
         Public Property Items As ObservableCollection(Of ItemDto)
@@ -68,6 +69,11 @@ Namespace WpfApp2.ViewModels
             Dim loadedItems = _jsonFileHandle.LoadItemsFromJson()
             For Each item In loadedItems
                 Items.Add(item)
+                cache.Add(New ItemWithMeter With {
+                    .Id = item.Id,
+                    .Name = item.Name,
+                    .LengthMm = item.LengthMm
+                })
             Next
         End Sub
 
@@ -91,14 +97,23 @@ Namespace WpfApp2.ViewModels
 
             If item.LengthMm <= 0 Then
                 MessageBox.Show("Length cannot be negative.", "Invalid Input", MessageBoxButton.OK, MessageBoxImage.Warning)
-                Return
+                Dim number = If(cache.FirstOrDefault(Function(i) i.Id = item.Id)?.LengthMm, 1000)
+                item.LengthMm = number
+
+
             End If
 
             Dim recalculated = _jsonFileHandle.Reclculate(Items.ToList())
             Items.Clear()
+            cache.Clear()
 
             For Each updated In recalculated
                 Items.Add(updated)
+                cache.Add(New ItemWithMeter With {
+                    .Id = updated.Id,
+                    .Name = updated.Name,
+                    .LengthMm = updated.LengthMm
+                })
             Next
         End Sub
 
